@@ -94,7 +94,7 @@ public class World extends Canvas implements Runnable, KeyListener, MouseInputLi
         	for (int x = 0; x < 10; x++) {
         		_bricks[x][y].update();
         		_bricks[x][y].draw(graphics);
-        		if (_ball.bounce(_bricks[x][y].getRect(), false))
+        		if (_bricks[x][y].getOn() && _ball.bounce(_bricks[x][y].getRect(), false))
         			_bricks[x][y].setOn(false);
         	}
         }
