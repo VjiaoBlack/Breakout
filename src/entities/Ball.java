@@ -9,12 +9,13 @@ public class Ball {
 	private Ellipse2D.Double _circle;
 	private int _angle;
 	private int _speed;
+	private double _gravity;
 	private boolean _intersects;
 
 	public Ball(double x, double y) {
 		_circle = new Ellipse2D.Double(x, y, 10, 10);
 		_angle = 270;
-		_speed = 500;
+		_speed = 400;
 	}
 
 	public void draw(Graphics2D g) {
@@ -29,6 +30,7 @@ public class Ball {
 		double y = _circle.getCenterY();
 		if (isPaddle) {
 			if (_circle.intersects(rect)) {
+				_gravity = -4;
 				if ((_circle.getY() + 10) >= rect.getY()
 						&& _circle.getX() + 5 >= rect.getX()
 						&& _circle.getX() + 5 <= rect.getX() + rect.getWidth()
@@ -37,12 +39,10 @@ public class Ball {
 							.getWidth()));
 				} else if (rect.getX() - x <= 5) {
 					_angle = 150;
-					System.out.println(2);
 				}
 
 				else if (rect.getX() + rect.getWidth() - _circle.getX() <= 5) {
 					_angle = 30;
-					System.out.println(3);
 				}
 			}
 
@@ -60,27 +60,34 @@ public class Ball {
 			}
 		}
 
-		if (_circle.getX() < 0 && !_intersects) {
+		if (_circle.getX()
+				+ (_speed * (Math.cos(Math.toRadians(_angle))) / 100) < 0
+				&& !_intersects) {
 			if (_angle > 180)
 				_angle = 540 - _angle;
 			else
 				_angle = 180 - _angle;
 			return false;
 		}
-		if (_circle.getY() < 0 && !_intersects) {
+		if (_circle.getY()
+				- (_speed * (Math.sin(Math.toRadians(_angle))) / 100) < 0
+				&& !_intersects) {
 			_angle = 0 - _angle;
+			_gravity = 0;
 			return false;
 		}
-		if (_circle.getX() + _circle.getWidth() > 800 && !_intersects) {
+		if (_circle.getX() + _circle.getWidth()
+				+ (_speed * (Math.cos(Math.toRadians(_angle))) / 100) > 800
+				&& !_intersects) {
 			if (_angle > 180)
 				_angle = 180 + 180 - (_angle - 180);
 			else
 				_angle = 180 - _angle;
 			return false;
 		}
-		System.out.println(_intersects);
-		if (_circle.getX() + _circle.getWidth() > 800 || _circle.getY() < 0
-				|| _circle.getX() < 0)
+		if (_circle.getX() + _circle.getWidth()
+				+ (_speed * (Math.cos(Math.toRadians(_angle))) / 100) > 800
+				|| _circle.getY() < 0 || _circle.getX() < 0)
 			_intersects = true;
 		else
 			_intersects = false;
@@ -94,8 +101,9 @@ public class Ball {
 				_circle.getX()
 						+ (_speed * (Math.cos(Math.toRadians(_angle))) / 100),
 				_circle.getY()
-						- (_speed * (Math.sin(Math.toRadians(_angle))) / 100),
-				10, 10);
+						- (_speed * (Math.sin(Math.toRadians(_angle))) / 100)
+						+ _gravity, 10, 10);
+		_gravity += 0.06;
 
 	}
 }
