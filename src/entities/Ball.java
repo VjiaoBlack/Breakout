@@ -9,6 +9,7 @@ public class Ball {
 	private Ellipse2D.Double _circle;
 	private int _angle;
 	private int _speed;
+	private boolean _intersects;
 
 	public Ball(double x, double y) {
 		_circle = new Ellipse2D.Double(x, y, 10, 10);
@@ -32,9 +33,9 @@ public class Ball {
 						&& _circle.getX() + 5 >= rect.getX()
 						&& _circle.getX() + 5 <= rect.getX() + rect.getWidth()
 						&& _circle.intersects(rect)) {
-					_angle = 135 - (int) (90.0 * ((_circle.getX() - rect.getX()) / rect
+					_angle = 135 - (int) (90.0 * ((x - rect.getX()) / rect
 							.getWidth()));
-				} else if (rect.getX() - _circle.getX() <= 5) {
+				} else if (rect.getX() - x <= 5) {
 					_angle = 150;
 					System.out.println(2);
 				}
@@ -47,41 +48,54 @@ public class Ball {
 
 		} else {
 			if (_circle.intersects(rect)) {
-				if (x >= rect.getX() && x <= rect.getX() + rect.getWidth())
+				if (x >= rect.getX() + .1
+						&& x <= rect.getX() + rect.getWidth() + .1)
 					_angle = 0 - _angle;
-				else if (y >= rect.getY() && y <= rect.getY() + rect.getWidth())
+				else if (y >= rect.getY() + .1
+						&& y <= rect.getY() + rect.getWidth() + .1)
 					if (_angle > 180)
 						_angle = 540 - _angle;
 					else
 						_angle = 180 - _angle;
 			}
 		}
-		
-		if (_circle.getX() < 0){
+
+		if (_circle.getX() < 0 && !_intersects) {
 			if (_angle > 180)
 				_angle = 540 - _angle;
 			else
 				_angle = 180 - _angle;
 			return false;
 		}
-		if (_circle.getY() < 0){
+		if (_circle.getY() < 0 && !_intersects) {
 			_angle = 0 - _angle;
 			return false;
 		}
-		if (_circle.getX() + _circle.getWidth() > 800){
+		if (_circle.getX() + _circle.getWidth() > 800 && !_intersects) {
 			if (_angle > 180)
-				_angle = 540 - _angle;
+				_angle = 180 + 180 - (_angle - 180);
 			else
 				_angle = 180 - _angle;
 			return false;
 		}
+		System.out.println(_intersects);
+		if (_circle.getX() + _circle.getWidth() > 800 || _circle.getY() < 0
+				|| _circle.getX() < 0)
+			_intersects = true;
+		else
+			_intersects = false;
+
 		return _angle != _oldAngle;
 	}
 
 	public void update() {
 
-		_circle.setFrame(_circle.getX() + (_speed * (Math.cos(Math.toRadians(_angle))) / 100),
-				_circle.getY() - (_speed * (Math.sin(Math.toRadians(_angle))) / 100), 10, 10);
+		_circle.setFrame(
+				_circle.getX()
+						+ (_speed * (Math.cos(Math.toRadians(_angle))) / 100),
+				_circle.getY()
+						- (_speed * (Math.sin(Math.toRadians(_angle))) / 100),
+				10, 10);
 
 	}
 }

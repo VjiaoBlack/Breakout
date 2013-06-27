@@ -12,7 +12,6 @@ import entities.*;
 
 public class World extends Canvas implements Runnable, KeyListener, MouseInputListener {
 
-    private static final long serialVersionUID = 1L;
     private static final int MAX_FPS = 60;
     private static final String FONT_FILE = "res/font.ttf";
 
@@ -31,7 +30,7 @@ public class World extends Canvas implements Runnable, KeyListener, MouseInputLi
         frame = new JFrame();
         font = loadFont();
         
-        _ball = new Ball(400,500);
+        _ball = new Ball(395,495);
         _paddle = new Paddle(350, 550, 100, 10);
         _bricks = new Brick[10][5];
     }
@@ -42,8 +41,6 @@ public class World extends Canvas implements Runnable, KeyListener, MouseInputLi
 
         setFocusable(true);
         addKeyListener(this);
-        addMouseListener(this);
-        addMouseMotionListener(this);
 
         frame.setTitle("Breakout");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -53,7 +50,7 @@ public class World extends Canvas implements Runnable, KeyListener, MouseInputLi
         	
         for (int y = 0; y < 5; y++){
         	for (int x = 0; x < 10; x++) {
-        		_bricks[x][y] = new Brick(x*80 + 5, y*50 + 5, 70, 40);
+        		_bricks[x][y] = new Brick(x*80, y*50, 80, 50);
         		_bricks[x][y].setOn(true);
         	}
         }
@@ -159,6 +156,8 @@ public class World extends Canvas implements Runnable, KeyListener, MouseInputLi
     	_paddle.update(event);
     	if (event.getKeyCode() == KeyEvent.VK_Q)
     		shutdown();
+    	if (event.getKeyCode() == KeyEvent.VK_R)
+    		_ball = new Ball(400,500);
     }
 
     @Override
